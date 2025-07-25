@@ -9,6 +9,11 @@ def test_dark_theme_by_time():
     # TODO переключите темную тему в зависимости от времени суток (с 22 до 6 часов утра - ночь)
 
     is_dark_theme = None
+
+    if current_time.hour >= 22 or current_time.hour < 6:
+        is_dark_theme = True
+        print('Сейчас включена тёмная тема!')
+
     assert is_dark_theme is True
 
 
@@ -25,7 +30,20 @@ def test_dark_theme_by_time_and_user_choice():
     # TODO переключите темную тему в зависимости от времени суток,
     #  но учтите что темная тема может быть включена вручную
 
-    is_dark_theme = None
+    if dark_theme_enabled_by_user == True:
+        is_dark_theme = True
+        print("Пользователь включил тёмную тему.")
+    elif dark_theme_enabled_by_user is None:
+        if current_time.hour >= 22 or current_time.hour < 6:
+            is_dark_theme = True
+            print("Тёмная тема включена по времени.")
+        else:
+            is_dark_theme = False
+            print("Тёмная тема выключена по времени.")
+    else:
+        is_dark_theme = False
+        print("Пользователь выключил тёмную тему.")
+
     assert is_dark_theme is True
 
 
@@ -42,11 +60,22 @@ def test_find_suitable_user():
     ]
 
     # TODO найдите пользователя с именем "Olga"
-    suitable_users = None
-    assert suitable_users == {"name": "Olga", "age": 45}
+
+    for suitable_users in users:
+        if suitable_users['name'] == 'Olga':
+            print(suitable_users)
+
+            assert suitable_users == {"name": "Olga", "age": 45}
 
     # TODO найдите всех пользователей младше 20 лет
-    suitable_users = None
+
+    user_lst = []
+    for user in users:
+        if user["age"] < 20:
+            user_lst.append(user)
+    suitable_users = user_lst.copy()
+    print(suitable_users)
+
     assert suitable_users == [
         {"name": "Stanislav", "age": 15},
         {"name": "Maria", "age": 18},
@@ -64,6 +93,12 @@ def test_find_suitable_user():
 # "Open Browser [Chrome]"
 
 
+def function_name_and_args_print(func, *args):
+    func_name = func.__name__.replace('_', ' ').title()
+    args_name = ', '.join([*args])
+    print(f'{func_name} [{args_name}]')
+    return f'{func_name} [{args_name}]'
+
 def test_readable_function():
     open_browser(browser_name="Chrome")
     go_to_companyname_homepage(page_url="https://companyname.com")
@@ -71,15 +106,16 @@ def test_readable_function():
 
 
 def open_browser(browser_name):
-    actual_result = None
+    function_name_and_args_print(open_browser, browser_name)
+    actual_result = function_name_and_args_print(open_browser, browser_name)
     assert actual_result == "Open Browser [Chrome]"
 
 
 def go_to_companyname_homepage(page_url):
-    actual_result = None
+    actual_result = function_name_and_args_print(go_to_companyname_homepage, page_url)
     assert actual_result == "Go To Companyname Homepage [https://companyname.com]"
 
 
 def find_registration_button_on_login_page(page_url, button_text):
-    actual_result = None
+    actual_result = function_name_and_args_print(find_registration_button_on_login_page, page_url, button_text)
     assert actual_result == "Find Registration Button On Login Page [https://companyname.com/login, Register]"
